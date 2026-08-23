@@ -1,6 +1,5 @@
-version: '3.9'
-
 services:
+
   web:
     build: .
     container_name: pasal-app
@@ -8,7 +7,26 @@ services:
       - "8000:8000"
     volumes:
       - .:/app
-      - sqlite_data:/app/src
+    environment:
+      DB_NAME: pasal
+      DB_USER: postgres
+      DB_PASSWORD: password
+      DB_HOST: postgres
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    container_name: pasal-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: pasal
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
 
 volumes:
-  sqlite_data:
+  postgres_data:
