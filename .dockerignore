@@ -2,7 +2,27 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+
+# Python virtual environments
+.venv/
 env/
 venv/
-.git
+
+# Git
+.git/
 .gitignore
+
+# Testing
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+kubectl.exe
