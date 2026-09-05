@@ -25,10 +25,10 @@ DOMAIN = "http://localhost:8000"
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-m=h8!7z$#-un2falajymaodxmp)+n14tz_9z9kknl(@0(c0uyt"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = ["*"]
 
@@ -119,11 +119,11 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv("DB_NAME", "pasal"),
-        'USER': os.getenv("DB_USER", "postgres"),
-        'PASSWORD': os.getenv("DB_PASSWORD", "password"),
-        'HOST': os.getenv("DB_HOST", "postgres"),
-        'PORT': '5432',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 }
 
@@ -182,7 +182,7 @@ AUTHENTICATION_BACKENDS = [
     "apps.tenant.auth.CustomTenantAuthBackend",
 ]
 
-X_FRAME_OPTIONS = "ALLOW-FROM *.localhost:8000/"
+X_FRAME_OPTIONS = "DENY"
 
 
 STRIPE_PUBLIC_KEY = "pk_test_51OGk1UF9yXfHu69QYEujtrjmzFmfQH8rYmYehFjNM1hHFKbDC1Q3cN3z5XfSbwoizfT7IV1yX7HObYIwztE3X48i00azNAiRmP"
