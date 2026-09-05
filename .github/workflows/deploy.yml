@@ -10,43 +10,70 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: pasal
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d pasal"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
       - name: Install dependencies
         run: |
-          pip install --upgrade pip 
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
-      
+
       - name: Verify Django installation
         run: |
           python -c "import django; print(django.get_version())"
 
       - name: Run migrations check
+        env:
+          DB_NAME: pasal
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_HOST: localhost
+          DB_PORT: 5432
         run: |
           python src/manage.py makemigrations --check
 
       - name: Run tests
+        env:
+          DB_NAME: pasal
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_HOST: localhost
+          DB_PORT: 5432
         run: |
           python src/manage.py test
 
       - name: Build Docker image
         run: |
           docker build -t pasal .
-      
+
       - name: Login to Docker Hub
         run: |
-          echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login \
+            -u "${{ secrets.DOCKER_USERNAME }}" \
+            --password-stdin
 
       - name: Build and push image
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/pasal:latest .
           docker push ${{ secrets.DOCKER_USERNAME }}/pasal:latest
-
-      
