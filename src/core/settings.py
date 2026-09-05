@@ -25,10 +25,10 @@ DOMAIN = "http://localhost:8000"
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-m=h8!7z$#-un2falajymaodxmp)+n14tz_9z9kknl(@0(c0uyt"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
 ALLOWED_HOSTS = ["*"]
 
@@ -182,7 +182,7 @@ AUTHENTICATION_BACKENDS = [
     "apps.tenant.auth.CustomTenantAuthBackend",
 ]
 
-X_FRAME_OPTIONS = "ALLOW-FROM *.localhost:8000/"
+X_FRAME_OPTIONS = "DENY"
 
 
 STRIPE_PUBLIC_KEY = "pk_test_51OGk1UF9yXfHu69QYEujtrjmzFmfQH8rYmYehFjNM1hHFKbDC1Q3cN3z5XfSbwoizfT7IV1yX7HObYIwztE3X48i00azNAiRmP"
